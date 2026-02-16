@@ -321,7 +321,6 @@ elif app_mode == "Automatic Diagnostics (v2)":
         st.markdown("---")
         
         # Simulation Controls
-        # Simulation Controls
         if st.button("🔄 Refresh Data Feed"):
             for m_id in st.session_state.machines:
                  st.session_state.machine_data[m_id] = generate_machine_data(m_id)
