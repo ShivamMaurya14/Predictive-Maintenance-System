@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Jupyter Notebooks
+.ipynb_checkpoints
+my_nb.ipynb
+
+# Model files (optional, but if big, might want to ignore. Keeping it for now as per repo structure, but ignoring temp builds)
+# model.joblib
+
+# Virtual Environments
+venv/
+env/
+.env
+
+# OS specific
+.DS_Store
