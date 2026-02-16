@@ -5,6 +5,7 @@ import numpy as np
 import joblib
 import time
 import random
+import datetime
 
 # --- Setup & Configuration ---
 st.set_page_config(
@@ -317,10 +318,13 @@ elif app_mode == "Automatic Diagnostics (v2)":
         st.markdown("---")
         
         # Simulation Controls
+        # Simulation Controls
         if st.button("🔄 Refresh Data Feed"):
             for m_id in st.session_state.machines:
                  st.session_state.machine_data[m_id] = generate_machine_data(m_id)
             st.toast("Updated sensor data from all units", icon="📡")
+        
+        st.caption(f"Last Update: {datetime.datetime.now().strftime('%H:%M:%S')}")
 
     # Dashboard Summary
     total_machines = len(st.session_state.machines)
