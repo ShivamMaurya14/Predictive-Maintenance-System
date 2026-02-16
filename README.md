@@ -42,8 +42,8 @@ Follow these steps to set up the project locally.
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/shivammaurya14/predictive-maintenance-system.git
-cd predictive-maintenance-system
+git clone https://github.com/ShivamMaurya14/Predictive-Maintenance-System.git
+cd Predictive-Maintenance-System
 ```
 
 ### 2. Create a Virtual Environment (Optional but Recommended)
