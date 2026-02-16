@@ -63,6 +63,7 @@ def load_css():
         }
         div[data-testid="stMetricValue"] {
             color: #E6EDF3;
+            
             font-weight: 700;
         }
 
@@ -152,14 +153,15 @@ with st.sidebar:
     app_mode = st.radio("Select Mode", ["Manual Diagnostics (v1)", "Automatic Diagnostics (v2)"])
     st.markdown("---")
 
+# Main Page Title (Common for both modes)
+st.title("🏭 Predictive Maintenance System")
 
 # ==============================================================================
 # MODE 1: MANUAL DIAGNOSIS (Single Machine) - The original "Version 1"
 # ==============================================================================
 if app_mode == "Manual Diagnostics (v1)":
     
-    st.title("🛠️ Manual Diagnostics Tool")
-    st.markdown("### Single Unit Analysis (v1)")
+    st.markdown("### 🛠️ Manual Diagnostics Tool (Single Unit)")
     
     # Main Area Inputs
     st.header("⚙️ Parameter Configuration")
@@ -234,8 +236,7 @@ if app_mode == "Manual Diagnostics (v1)":
 # ==============================================================================
 elif app_mode == "Automatic Diagnostics (v2)":
     
-    st.title("🏭 Predictive Maintenance System")
-    st.markdown("### Real-Time Fleet Monitoring (v2)")
+    st.markdown("### 🏭 Real-Time Fleet Monitoring (v2)")
 
     # --- Utility Functions for v2 ---
     def generate_machine_data(machine_id):
