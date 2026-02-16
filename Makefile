@@ -14,8 +14,8 @@ run:
 	$(STREAMLIT) run app.py
 
 train:
-	$(PYTHON) retrain_model.py
+	$(PYTHON) train.py
 
 clean:
 	find . -type d -name "__pycache__" -exec rm -rf {} +
-	rm -f model.joblib
+	rm -f models/model.joblib

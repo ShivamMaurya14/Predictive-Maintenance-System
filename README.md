@@ -21,7 +21,7 @@ A robust, AI-driven application designed to predict equipment failures before th
 *   **Dual Operation Modes:**
     *   **🛠️ Manual Diagnostics:** Deep-dive analysis for single units. Input sensor parameters manually to stress-test specific scenarios and visualize failure probabilities.
     *   **🏭 Automatic Fleet Monitoring:** Real-time dashboard simulating a fleet of 9+ industrial machines. Tracks live telemetry, failure risks, and operational status simultaneously.
-*   **Intelligent Prediction Engine:** Powered by a trained **Random Forest Classifier** (`model.joblib`), achieving consistently high accuracy (>98%) in detecting potential failures.
+*   **Intelligent Prediction Engine:** Powered by a trained **Random Forest Classifier** (`models/model.joblib`), achieving consistently high accuracy (>98%) in detecting potential failures.
 *   **Real-time Feature Engineering:** Automatically calculates critical derived metrics like *Temperature Difference* and *Mechanical Power* on the fly.
 *   **Professional UI/UX:** Dark-mode enabled, responsive design built with Streamlit, featuring interactive metric cards, visual health indicators, and dynamic alerts.
 
@@ -69,11 +69,11 @@ pip install -r requirements.txt
 > `pip install streamlit pandas numpy scikit-learn joblib`
 
 ### 4. Training the Model (Optional)
-The project comes with a pre-trained model (`model.joblib`). If you wish to retrain it:
+The project comes with a pre-trained model (`models/model.joblib`). If you wish to retrain it:
 ```bash
-python retrain_model.py
+python train.py
 ```
-*This will create a fresh `model.joblib` file in your directory.*
+*This will create a fresh `model.joblib` file in your `models/` directory.*
 
 ### 5. Run the Application
 Launch the dashboard in your browser.
@@ -85,11 +85,17 @@ streamlit run app.py
 
 ```
 ├── app.py                 # Main Streamlit Application (Frontend)
-├── retrain_model.py       # ML Model Training Script (Backend logic)
-├── model.joblib           # Serialized Random Forest Model
+├── train.py               # ML Model Training Script (Backend logic)
+├── models/
+│   └── model.joblib       # Serialized Random Forest Model
+├── dataset/
+│   └── ai4i2020.csv       # Training Dataset
+├── nb/
+│   └── ml-powered-maintenance-smarter-proactive.ipynb  # exploration
+├── resources/             # Preview images & assets
 ├── requirements.txt       # Python Dependencies
+├── Makefile               # Automation commands
 ├── LICENSE                # MIT License
-├── .gitignore             # Git ignore file
 └── README.md              # Project Documentation
 ```
 
