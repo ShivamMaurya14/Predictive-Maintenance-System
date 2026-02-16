@@ -155,7 +155,7 @@ load_css()
 @st.cache_resource
 def load_model():
     try:
-        return joblib.load('model.joblib')
+        return joblib.load('models/model.joblib')
     except Exception as e:
         st.error(f"Error loading model: {e}")
         return None
