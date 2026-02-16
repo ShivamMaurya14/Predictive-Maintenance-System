@@ -33,15 +33,32 @@ def load_css():
         }
         
         /* Header Styling */
+        /* Header Styling */
         h1 {
+            font-family: 'Inter', sans-serif;
+            font-size: 2.2rem;
             font-weight: 700;
             color: #58A6FF;
             letter-spacing: -0.5px;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.2rem;
         }
-        h2, h3 {
+        h2 {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.5rem;
             font-weight: 600;
             color: #E6EDF3;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #30363D;
+            padding-bottom: 0.5rem;
+        }
+        h3 {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #C9D1D9;
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
         }
         
         /* Metric Card Styling */
@@ -164,24 +181,24 @@ if app_mode == "Manual Diagnostics (v1)":
     st.markdown("### 🛠️ Manual Diagnostics Tool (Single Unit)")
     
     # Main Area Inputs
-    st.header("⚙️ Parameter Configuration")
+    st.markdown("## ⚙️ Parameter Configuration")
     
     # Create 3 equal columns for better spacing
     c1, c2, c3 = st.columns(3)
     
     with c1:
-        st.markdown("#### Machine Specs")
+        st.markdown("### Machine Specs")
         machine_type = st.selectbox("Quality Class", ['L (Low)', 'M (Medium)', 'H (High)'], index=1)
         type_code = machine_type.split()[0]
         tool_wear = st.number_input("Tool Wear [min]", 0, 300, 100, 1)
 
     with c2:
-        st.markdown("#### Operation")
+        st.markdown("### Operation")
         rot_speed = st.number_input("Rotational Speed [rpm]", 1000, 3000, 1500, 10)
         torque = st.number_input("Torque [Nm]", 10.0, 100.0, 40.0, 0.1)
 
     with c3:
-        st.markdown("#### Environment")
+        st.markdown("### Environment")
         air_temp = st.number_input("Air Temp [K]", 290.0, 310.0, 300.0, 0.1)
         process_temp = st.number_input("Process Temp [K]", 300.0, 320.0, 310.0, 0.1)
 
@@ -236,7 +253,7 @@ if app_mode == "Manual Diagnostics (v1)":
 # ==============================================================================
 elif app_mode == "Automatic Diagnostics (v2)":
     
-    st.markdown("### 🏭 Real-Time Fleet Monitoring (v2)")
+    st.markdown("### Real-Time Fleet Monitoring (v2)")
 
     # --- Utility Functions for v2 ---
     def generate_machine_data(machine_id):
