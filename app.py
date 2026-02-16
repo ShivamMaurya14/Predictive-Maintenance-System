@@ -16,118 +16,121 @@ st.set_page_config(
 )
 
 # --- Custom CSS for Professional & Aesthetic Look ---
-st.markdown("""
-<style>
-    /* Global Styling */
-    .stApp {
-        background-color: #0E1117;
-        color: #FAFAFA;
-        font-family: 'Inter', sans-serif;
-    }
+def load_css():
+    st.markdown("""
+    <style>
+        /* Global Styling */
+        .stApp {
+            background-color: #0E1117;
+            color: #FAFAFA;
+            font-family: 'Inter', sans-serif;
+        }
 
-    /* Sidebar Styling */
-    section[data-testid="stSidebar"] {
-        background-color: #161B22;
-        border-right: 1px solid #30363D;
-    }
-    
-    /* Header Styling */
-    h1 {
-        font-weight: 700;
-        color: #58A6FF;
-        letter-spacing: -0.5px;
-        margin-bottom: 0.5rem;
-    }
-    h2, h3 {
-        font-weight: 600;
-        color: #E6EDF3;
-    }
-    
-    /* Metric Card Styling */
-    div[data-testid="stMetric"] {
-        background-color: #21262D;
-        border: 1px solid #30363D;
-        padding: 15px;
-        border-radius: 8px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-        transition: transform 0.2s;
-    }
-    div[data-testid="stMetric"]:hover {
-        transform: translateY(-2px);
-        border-color: #58A6FF;
-    }
-    div[data-testid="stMetricLabel"] {
-        color: #8B949E;
-        font-size: 0.9rem;
-    }
-    div[data-testid="stMetricValue"] {
-        color: #E6EDF3;
-        font-weight: 700;
-    }
+        /* Sidebar Styling */
+        section[data-testid="stSidebar"] {
+            background-color: #161B22;
+            border-right: 1px solid #30363D;
+        }
+        
+        /* Header Styling */
+        h1 {
+            font-weight: 700;
+            color: #58A6FF;
+            letter-spacing: -0.5px;
+            margin-bottom: 0.5rem;
+        }
+        h2, h3 {
+            font-weight: 600;
+            color: #E6EDF3;
+        }
+        
+        /* Metric Card Styling */
+        div[data-testid="stMetric"] {
+            background-color: #21262D;
+            border: 1px solid #30363D;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s;
+        }
+        div[data-testid="stMetric"]:hover {
+            transform: translateY(-2px);
+            border-color: #58A6FF;
+        }
+        div[data-testid="stMetricLabel"] {
+            color: #8B949E;
+            font-size: 0.9rem;
+        }
+        div[data-testid="stMetricValue"] {
+            color: #E6EDF3;
+            font-weight: 700;
+        }
 
-    /* Button Styling */
-    .stButton > button {
-        background: linear-gradient(90deg, #238636 0%, #2EA043 100%);
-        color: white;
-        font-weight: 700;
-        font-size: 1.1rem !important;
-        border: none;
-        padding: 0.8rem 2rem !important;
-        border-radius: 6px;
-        width: 100%;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 14px rgba(46, 160, 67, 0.4);
-    }
-    .stButton > button:hover {
-        background: linear-gradient(90deg, #2EA043 0%, #3FB950 100%);
-        transform: scale(1.02);
-        box-shadow: 0 6px 20px rgba(46, 160, 67, 0.6);
-        padding: 0.9rem 2.1rem !important;
-    }
+        /* Button Styling */
+        .stButton > button {
+            background: linear-gradient(90deg, #238636 0%, #2EA043 100%);
+            color: white;
+            font-weight: 700;
+            font-size: 1.1rem !important;
+            border: none;
+            padding: 0.8rem 2rem !important;
+            border-radius: 6px;
+            width: 100%;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 14px rgba(46, 160, 67, 0.4);
+        }
+        .stButton > button:hover {
+            background: linear-gradient(90deg, #2EA043 0%, #3FB950 100%);
+            transform: scale(1.02);
+            box-shadow: 0 6px 20px rgba(46, 160, 67, 0.6);
+            padding: 0.9rem 2.1rem !important;
+        }
 
-    /* Input Fields */
-    .stNumberInput, .stSelectbox {
-        margin-bottom: 1rem;
-    }
-    
-    /* Success/Error Message Containers */
-    .stAlert {
-        border-radius: 8px;
-        padding: 1rem;
-        border: none;
-    }
+        /* Input Fields */
+        .stNumberInput, .stSelectbox {
+            margin-bottom: 1rem;
+        }
+        
+        /* Success/Error Message Containers */
+        .stAlert {
+            border-radius: 8px;
+            padding: 1rem;
+            border: none;
+        }
 
-    /* DataFrame Styling */
-    div[data-testid="stDataFrame"] {
-        border: 1px solid #30363D;
-        border-radius: 8px;
-        overflow: hidden;
-    }
+        /* DataFrame Styling */
+        div[data-testid="stDataFrame"] {
+            border: 1px solid #30363D;
+            border-radius: 8px;
+            overflow: hidden;
+        }
 
-    /* Custom Divider */
-    hr {
-        border-color: #30363D;
-        margin: 2rem 0;
-    }
-    
-    /* Machine Card Grid */
-    .machine-card {
-        background-color: #161B22;
-        border: 1px solid #30363D;
-        border-radius: 8px;
-        padding: 15px;
-        margin-bottom: 15px;
-    }
-    .status-ok {
-        color: #3fb950;
-        font-weight: bold;
-    }
-    .status-fail {
-        color: #ff6b6b;
-        font-weight: bold;
-    }
-</style>
-""", unsafe_allow_html=True)
+        /* Custom Divider */
+        hr {
+            border-color: #30363D;
+            margin: 2rem 0;
+        }
+        
+        /* Machine Card Grid */
+        .machine-card {
+            background-color: #161B22;
+            border: 1px solid #30363D;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        .status-ok {
+            color: #3fb950;
+            font-weight: bold;
+        }
+        .status-fail {
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+    </style>
+    """, unsafe_allow_html=True)
+
+load_css()
 
 # --- App Logic ---
 
