@@ -7,7 +7,11 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 
-print("Generating synthetic dataset based on notebook description...")
+
+print("=========================================")
+print("   Synthetic Data Generation Pipeline    ")
+print("=========================================")
+print("[1/3] generating synthetic sensor data based on notebook specs...")
 
 # Set random seed for reproducibility
 np.random.seed(42)
@@ -118,3 +122,5 @@ print(f"Model Accuracy: {acc:.4f}")
 # 6. Save Model
 joblib.dump(model, 'model.joblib')
 print("Model saved to model.joblib")
+print("[3/3] Process Completed Successfully. Ready for deployment.")
+print("=========================================")
