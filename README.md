@@ -11,10 +11,10 @@ A robust, AI-driven application designed to predict equipment failures before th
 ## 📸 Dashboard Previews
 
 ### 1. Manual Diagnostics Mode
-![Manual Mode Preview](preview_manual.png)
+![Manual Mode Preview](resources/preview_manual.png)
 
 ### 2. Automatic Fleet Monitoring Mode
-![Automatic Mode Preview](preview_automatic.png)
+![Automatic Mode Preview](resources/preview_automatic.png)
 
 ## 🚀 Key Features
 
