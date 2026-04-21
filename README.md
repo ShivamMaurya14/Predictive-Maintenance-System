@@ -18,9 +18,10 @@ A robust, AI-driven application designed to predict equipment failures before th
 
 ## 🚀 Key Features
 
-*   **Dual Operation Modes:**
-    *   **🛠️ Manual Diagnostics:** Deep-dive analysis for single units. Input sensor parameters manually to stress-test specific scenarios and visualize failure probabilities.
-    *   **🏭 Automatic Fleet Monitoring:** Real-time dashboard simulating a fleet of 9+ industrial machines. Tracks live telemetry, failure risks, and operational status simultaneously.
+*   **Triple Operation Modes:**
+    *   **📡 Live IoT Sensor (v3):** *NEW* - Connects directly to hardware (ESP32) via a local FastAPI backend. Ingests real-time physical telemetry.
+    *   **🏭 Simulation Diagnostics (v2):** Real-time dashboard simulating a fleet of 9+ industrial machines. Tracks live telemetry, failure risks, and operational status simultaneously.
+    *   **🛠️ Manual Diagnostics (v1):** Deep-dive analysis for single units. Input sensor parameters manually to stress-test specific scenarios and visualize failure probabilities.
 *   **Intelligent Prediction Engine:** Powered by a trained **Random Forest Classifier** (`models/model.joblib`), achieving consistently high accuracy (>98%) in detecting potential failures.
 *   **Real-time Feature Engineering:** Automatically calculates critical derived metrics like *Temperature Difference* and *Mechanical Power* on the fly.
 *   **Professional UI/UX:** Dark-mode enabled, responsive design built with Streamlit, featuring interactive metric cards, visual health indicators, and dynamic alerts.
@@ -76,7 +77,14 @@ python train.py
 *This will create a fresh `model.joblib` file in your `models/` directory.*
 
 ### 5. Run the Application
-Launch the dashboard in your browser.
+The application now features a decoupled microservice architecture (Backend + Frontend). You will need two terminal windows.
+
+**Terminal 1 (Backend API):**
+```bash
+uvicorn api:app --reload
+```
+
+**Terminal 2 (Frontend Dashboard):**
 ```bash
 streamlit run app.py
 ```
@@ -84,7 +92,9 @@ streamlit run app.py
 ## 📂 Project Structure
 
 ```
+├── api.py                 # FastAPI Backend Server (IoT Data Ingestion)
 ├── app.py                 # Main Streamlit Application (Frontend)
+├── esp32_firmware/        # C++ firmware for the ESP32 microcontroller
 ├── train.py               # ML Model Training Script (Backend logic)
 ├── models/
 │   └── model.joblib       # Serialized Random Forest Model

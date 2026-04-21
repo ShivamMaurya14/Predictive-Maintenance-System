@@ -6,6 +6,7 @@ import joblib
 import time
 import random
 import datetime
+import requests
 
 # --- Setup & Configuration ---
 st.set_page_config(
@@ -167,7 +168,7 @@ model = load_model()
 with st.sidebar:
     st.image("https://img.icons8.com/fluency/96/factory.png", width=64)
     st.title("Choose Version")
-    app_mode = st.radio("Select Mode", ["Manual Diagnostics (v1)", "Automatic Diagnostics (v2)"])
+    app_mode = st.radio("Select Mode", ["Manual Diagnostics (v1)", "Simulation Diagnostics (v2)", "Live IoT Sensor (v3)"])
     st.markdown("---")
 
 # Main Page Title (Common for both modes)
@@ -249,9 +250,9 @@ if app_mode == "Manual Diagnostics (v1)":
 
 
 # ==============================================================================
-# MODE 2: AUTOMATIC DIAGNOSTICS (Fleet Tracking) - The new "Version 2"
+# MODE 2: SIMULATION DIAGNOSTICS (Fleet Tracking) - Version 2
 # ==============================================================================
-elif app_mode == "Automatic Diagnostics (v2)":
+elif app_mode == "Simulation Diagnostics (v2)":
     
     st.markdown("### Real-Time Fleet Monitoring (v2)")
 
@@ -412,3 +413,99 @@ elif app_mode == "Automatic Diagnostics (v2)":
                     st.json(status['metrics'])
                     st.write("Raw Sensor Data:")
                     st.json(data)
+
+# ==============================================================================
+# MODE 3: LIVE IOT SENSOR (ESP32 Integration) - Version 3
+# ==============================================================================
+elif app_mode == "Live IoT Sensor (v3)":
+    st.markdown("### 📡 Live IoT Sensor Telemetry (v3)")
+    st.markdown("This mode connects directly to your ESP32 hardware via local API.")
+    
+    API_URL = "http://localhost:8000/api/telemetry/latest"
+    
+    # Auto-refresh toggler
+    c1, c2 = st.columns([1, 4])
+    with c1:
+        auto_refresh = st.toggle("Auto-Refresh (2s)", value=False)
+    with c2:
+        if st.button("🔄 Manual Fetch"):
+            pass # Streamlit natively reruns on button click
+            
+    if auto_refresh:
+        time.sleep(2)
+        st.rerun()
+        
+    try:
+        response = requests.get(API_URL, params={"limit": 6}, timeout=2)
+        
+        if response.status_code == 200:
+            telemetry_data = response.json()
+            if not telemetry_data:
+                st.info("No sensor data found in database. Please ensure your ESP32 is transmitting data.")
+            else:
+                st.subheader("Active Connected Units")
+                cols = st.columns(3)
+                
+                for idx, t_data in enumerate(telemetry_data):
+                    # We reuse process_and_predict but we need to structure data correctly for it
+                    data_dict = {
+                        'Machine ID': t_data['machine_id'],
+                        'Type': t_data['machine_type'],
+                        'Air temperature [K]': t_data['air_temp'],
+                        'Process temperature [K]': t_data['process_temp'],
+                        'Rotational speed [rpm]': t_data['rotational_speed'],
+                        'Torque [Nm]': t_data['torque'],
+                        'Tool wear [min]': t_data['tool_wear']
+                    }
+                    
+                    # We need to implement prediction processing specifically here because 
+                    # process_and_predict is defined INSIDE the v2 block right now.
+                    # Let's extract it or recreate it inline for simplicity
+                    type_mapping = {'H': 0, 'L': 1, 'M': 2}
+                    type_encoded = type_mapping[data_dict['Type']]
+                    temp_diff = data_dict['Process temperature [K]'] - data_dict['Air temperature [K]']
+                    power = data_dict['Torque [Nm]'] * data_dict['Rotational speed [rpm]'] * 2 * np.pi / 60
+                    
+                    input_df = pd.DataFrame([{
+                        'Type': type_encoded,
+                        'Air temperature [K]': data_dict['Air temperature [K]'],
+                        'Process temperature [K]': data_dict['Process temperature [K]'],
+                        'Rotational speed [rpm]': data_dict['Rotational speed [rpm]'],
+                        'Torque [Nm]': data_dict['Torque [Nm]'],
+                        'Tool wear [min]': data_dict['Tool wear [min]'],
+                        'temperature_difference': temp_diff,
+                        'Mechanical Power [W]': round(power, 4)
+                    }])
+                    
+                    pred = model.predict(input_df)[0] if model else 0
+                    prob = model.predict_proba(input_df)[0][1] if model and hasattr(model, "predict_proba") else 0
+                    metrics = {'Temp Diff': f"{temp_diff:.1f} K", 'Power': f"{power:.0f} W"}
+                    
+                    col_idx = idx % 3
+                    with cols[col_idx]:
+                        border_color = "#d03030" if pred == 1 else "#2ea043"
+                        status_text = "CRITICAL FAIL" if pred == 1 else "OPERATIONAL"
+                        status_icon = "🚨" if pred == 1 else "✅"
+                        
+                        with st.container(border=True):
+                            st.markdown(f"#### {status_icon} Node: {data_dict['Machine ID']}")
+                            st.caption(f"Last updated: {t_data['timestamp']}")
+                            st.markdown(f"**Type:** {data_dict['Type']} | **Status:** <span style='color:{border_color}'>{status_text}</span>", unsafe_allow_html=True)
+                            
+                            st.progress(prob, text=f"Failure Probability: {prob:.1%}")
+                            
+                            c1, c2 = st.columns(2)
+                            c1.markdown(f"**Temp:** {data_dict['Process temperature [K]']} K")
+                            c2.markdown(f"**RPM:** {data_dict['Rotational speed [rpm]']}")
+                            
+                            with st.expander("Detailed Telemetry"):
+                                st.write("Derived Metrics:")
+                                st.json(metrics)
+                                st.write("Raw Sensor Data:")
+                                st.json(data_dict)
+        else:
+            st.error(f"Error connecting to backend API: {response.status_code}")
+    except requests.exceptions.RequestException as e:
+        st.error(f"Could not connect to FastAPI server at {API_URL}. Is it running?")
+        st.code("uvicorn api:app --reload")
+
