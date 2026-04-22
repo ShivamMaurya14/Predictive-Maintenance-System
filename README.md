@@ -1,12 +1,12 @@
 # 🛡️ AI-Powered Predictive Maintenance System
 
-[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://predictive-maintenance-system-sm14.streamlit.app/)
+[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://pms-shivam-maurya.streamlit.app)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 A robust, AI-driven application designed to predict equipment failures before they occur. This project leverages machine learning (Random Forest) to analyze sensor data in real-time, helping industries optimize maintenance schedules, reduce downtime, and cut operational costs.
 
-### 🔴 Live Demo: [Click Here](https://predictive-maintenance-system-sm14.streamlit.app/)
+### 🔴 Live Demo: [Click Here](https://pms-shivam-maurya.streamlit.app)
 
 ## 📸 Dashboard Previews
 
