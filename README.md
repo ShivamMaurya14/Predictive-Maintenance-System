@@ -18,8 +18,9 @@ A robust, AI-driven application designed to predict equipment failures before th
 
 ## 🚀 Key Features
 
-*   **Triple Operation Modes:**
-    *   **📡 Live IoT Sensor (v3):** *NEW* - Connects directly to hardware (ESP32) via a local FastAPI backend. Ingests real-time physical telemetry.
+*   **Quadruple Operation Modes:**
+    *   **📈 Historical Analytics (v4):** *NEW* - Interactive Plotly dashboards charting massive historical timelines of sensor logs and offering direct CSV dataset exports.
+    *   **📡 Live IoT Sensor (v3):** Connects directly to hardware (ESP32) via a local FastAPI backend. Ingests real-time physical telemetry.
     *   **🏭 Simulation Diagnostics (v2):** Real-time dashboard simulating a fleet of 9+ industrial machines. Tracks live telemetry, failure risks, and operational status simultaneously.
     *   **🛠️ Manual Diagnostics (v1):** Deep-dive analysis for single units. Input sensor parameters manually to stress-test specific scenarios and visualize failure probabilities.
 *   **Intelligent Prediction Engine:** Powered by a trained **Random Forest Classifier** (`models/model.joblib`), achieving consistently high accuracy (>98%) in detecting potential failures.
