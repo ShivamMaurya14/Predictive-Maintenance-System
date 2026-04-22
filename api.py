@@ -101,6 +101,51 @@ def get_latest_telemetry(limit: int = 10):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.get("/api/telemetry/history", response_model=List[SensorDataOutput])
+def get_telemetry_history(machine_id: str, limit: int = 100):
+    try:
+        conn = sqlite3.connect(DB_FILE)
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+        
+        cursor.execute('''
+            SELECT * FROM telemetry 
+            WHERE machine_id = ?
+            ORDER BY timestamp ASC
+        ''', (machine_id,))
+        # Fetching all or limit from the end is better done by fetching DESC then reversing, or ASC with LIMIT.
+        # usually history graphs want chronological order: oldest to newest (left to right).
+        # Let's get the latest N rows, but order them ASC for plotting.
+        cursor.execute('''
+            SELECT * FROM (
+                SELECT * FROM telemetry 
+                WHERE machine_id = ?
+                ORDER BY timestamp DESC
+                LIMIT ?
+            ) ORDER BY timestamp ASC
+        ''', (machine_id, limit))
+        
+        rows = cursor.fetchall()
+        conn.close()
+        
+        results = []
+        for r in rows:
+            results.append(SensorDataOutput(
+                id=r["id"],
+                machine_id=r["machine_id"],
+                machine_type=r["machine_type"],
+                air_temp=r["air_temp"],
+                process_temp=r["process_temp"],
+                rotational_speed=r["rotational_speed"],
+                torque=r["torque"],
+                tool_wear=r["tool_wear"],
+                timestamp=r["timestamp"]
+            ))
+            
+        return results
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
