@@ -7,6 +7,7 @@ import time
 import random
 import datetime
 import requests
+import plotly.express as px
 
 # --- Setup & Configuration ---
 st.set_page_config(
@@ -168,7 +169,12 @@ model = load_model()
 with st.sidebar:
     st.image("https://img.icons8.com/fluency/96/factory.png", width=64)
     st.title("Choose Version")
-    app_mode = st.radio("Select Mode", ["Manual Diagnostics (v1)", "Simulation Diagnostics (v2)", "Live IoT Sensor (v3)"])
+    app_mode = st.radio("Select Mode", [
+        "Manual Diagnostics (v1)", 
+        "Simulation Diagnostics (v2)", 
+        "Live IoT Sensor (v3)",
+        "Historical Analytics (v4)"
+    ])
     st.markdown("---")
 
 # Main Page Title (Common for both modes)
@@ -508,4 +514,85 @@ elif app_mode == "Live IoT Sensor (v3)":
     except requests.exceptions.RequestException as e:
         st.error(f"Could not connect to FastAPI server at {API_URL}. Is it running?")
         st.code("uvicorn api:app --reload")
+
+# ==============================================================================
+# MODE 4: HISTORICAL ANALYTICS (v4)
+# ==============================================================================
+elif app_mode == "Historical Analytics (v4)":
+    st.markdown("### 📈 Historical Analytics & Trends (v4)")
+    st.markdown("Analyze deep historical sensor telemetry across connected units.")
+    
+    API_LATEST = "http://localhost:8000/api/telemetry/latest"
+    API_HISTORY = "http://localhost:8000/api/telemetry/history"
+    
+    # 1. Fetch available machine IDs to populate dropdown
+    try:
+        latest_res = requests.get(API_LATEST, params={"limit": 50}, timeout=2)
+        if latest_res.status_code == 200:
+            latest_data = latest_res.json()
+            available_machines = [item['machine_id'] for item in latest_data]
+            
+            if not available_machines:
+                st.info("No sensor data found. Switch to Simulation mode or attach an ESP32.")
+            else:
+                c1, c2 = st.columns([1, 3])
+                with c1:
+                    selected_machine = st.selectbox("Select Target Unit", available_machines)
+                    limit = st.slider("Data Points to Fetch", 50, 500, 100)
+                
+                with c2:
+                    st.markdown(f"#### Analyzing Data for `{selected_machine}`")
+                    st.caption("Retrieving live timeseries logs from the SQLite backend...")
+                    
+                # 2. Fetch History for the selected machine
+                history_res = requests.get(API_HISTORY, params={"machine_id": selected_machine, "limit": limit})
+                
+                if history_res.status_code == 200:
+                    hist_data = history_res.json()
+                    df_hist = pd.DataFrame(hist_data)
+                    
+                    if not df_hist.empty:
+                        # Convert timestamp to datetime
+                        df_hist['timestamp'] = pd.to_datetime(df_hist['timestamp'])
+                        
+                        # Plotly Charts
+                        st.markdown("---")
+                        
+                        tabs = st.tabs(["🌡️ Temperature Trends", "⚙️ Mechanical Trends", "📋 Raw DataFrame"])
+                        
+                        df_hist_melted_temp = df_hist.melt(id_vars=['timestamp'], value_vars=['air_temp', 'process_temp'], 
+                                                           var_name='Sensor', value_name='Temperature [K]')
+                                                           
+                        with tabs[0]:
+                            fig_temp = px.line(df_hist_melted_temp, x='timestamp', y='Temperature [K]', color='Sensor',
+                                              title=f"Temperature Over Time ({selected_machine})",
+                                              markers=True,
+                                              template="plotly_dark", color_discrete_sequence=['#58A6FF', '#FF7B72'])
+                            st.plotly_chart(fig_temp, use_container_width=True)
+                            
+                        with tabs[1]:
+                            col_a, col_b = st.columns(2)
+                            with col_a:
+                                fig_rpm = px.line(df_hist, x='timestamp', y='rotational_speed', 
+                                                  title="Rotational Speed [RPM]", template="plotly_dark", markers=True, color_discrete_sequence=['#3FB950'])
+                                st.plotly_chart(fig_rpm, use_container_width=True)
+                                
+                            with col_b:
+                                fig_torque = px.line(df_hist, x='timestamp', y='torque', 
+                                                     title="Torque [Nm]", template="plotly_dark", markers=True, color_discrete_sequence=['#E3B341'])
+                                st.plotly_chart(fig_torque, use_container_width=True)
+                                
+                        with tabs[2]:
+                            st.dataframe(df_hist, use_container_width=True)
+                            
+                            # CSV Download
+                            csv = df_hist.to_csv(index=False).encode('utf-8')
+                            st.download_button("Download CSV Log", csv, f"{selected_machine}_history.csv", "text/csv", use_container_width=True)
+                    else:
+                        st.warning("No historical data available for this machine.")
+        else:
+            st.error("Failed to load active machines from backend.")
+            
+    except requests.exceptions.RequestException:
+        st.error(f"Could not connect to FastAPI server. Is `uvicorn api:app` running?")
 
