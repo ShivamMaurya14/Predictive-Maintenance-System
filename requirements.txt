@@ -6,3 +6,4 @@ joblib
 fastapi
 uvicorn
 requests
+plotly
